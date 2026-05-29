@@ -5,15 +5,32 @@ import JoinRoomModal from "./JoinRoomModal.jsx";
 export default function Menu() {
   const [showCreateRoomPopup, setCreateRoomPopup] = useState(false);
   const [showJoinRoomPopup, setJoinRoomPopup] = useState(false);
+  const [roomCode, setRoomCode] = useState(null);
+
+  const handleCreateRoom = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/rooms", {
+        method: "POST",
+      });
+      if (response.ok) {
+        const code = await response.json();
+        setRoomCode(code);
+        setCreateRoomPopup(true);
+      }
+    } catch (e) {}
+  };
 
   return (
     <div className="menu">
       <h1 className="title-text">WordChain</h1>
       <div className="buttons">
         {showCreateRoomPopup && (
-          <CreateRoomModal onClose={() => setCreateRoomPopup(false)} />
+          <CreateRoomModal
+            onClose={() => setCreateRoomPopup(false)}
+            roomCode={roomCode}
+          />
         )}
-        <button onClick={() => setCreateRoomPopup(true)}>Create Room</button>
+        <button onClick={handleCreateRoom}>Create Room</button>
         {showJoinRoomPopup && (
           <JoinRoomModal onClose={() => setJoinRoomPopup(false)} />
         )}
