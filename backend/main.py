@@ -1,6 +1,6 @@
 import random
 import string
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -31,6 +31,13 @@ def create_room():
         room_id = "".join(random.choices(string.ascii_letters + string.digits, k=6))
         if room_id not in rooms:
             rooms[room_id] = {}
+            print(rooms)
             break
 
     return room_id
+
+@app.get("/rooms/{room_id}")
+def get_room(room_id: str):
+    if room_id not in rooms:
+        raise HTTPException(status_code=404, detail="Room not found")
+    return {"exists": True}

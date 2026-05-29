@@ -20,6 +20,16 @@ export default function Menu() {
     } catch (e) {}
   };
 
+  const handleJoinRoom = async (inputCode) => {
+    try {
+      const response = await fetch(`http://localhost:8000/rooms/${inputCode}`);
+      if (response.ok) {
+        setJoinRoomPopup(false);
+        console.log("Room found. Joining."); // placeholder for waiting room popup
+      }
+    } catch (e) {}
+  };
+
   return (
     <div className="menu">
       <h1 className="title-text">WordChain</h1>
@@ -32,7 +42,10 @@ export default function Menu() {
         )}
         <button onClick={handleCreateRoom}>Create Room</button>
         {showJoinRoomPopup && (
-          <JoinRoomModal onClose={() => setJoinRoomPopup(false)} />
+          <JoinRoomModal
+            onClose={() => setJoinRoomPopup(false)}
+            handleJoinRoom={handleJoinRoom}
+          />
         )}
         <button onClick={() => setJoinRoomPopup(true)}>Join Room</button>
       </div>
