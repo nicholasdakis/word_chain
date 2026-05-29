@@ -2,10 +2,9 @@ import { useState } from "react";
 import CreateRoomModal from "./CreateRoomModal.jsx";
 import JoinRoomModal from "./JoinRoomModal.jsx";
 
-export default function Menu() {
+export default function Menu({ setScreen, setRoomCode }) {
   const [showCreateRoomPopup, setCreateRoomPopup] = useState(false);
   const [showJoinRoomPopup, setJoinRoomPopup] = useState(false);
-  const [roomCode, setRoomCode] = useState(null);
 
   const handleCreateRoom = async () => {
     try {
@@ -15,7 +14,7 @@ export default function Menu() {
       if (response.ok) {
         const code = await response.json();
         setRoomCode(code);
-        setCreateRoomPopup(true);
+        setScreen("waiting");
       }
     } catch (e) {}
   };
@@ -24,14 +23,14 @@ export default function Menu() {
     try {
       const response = await fetch(`http://localhost:8000/rooms/${inputCode}`);
       if (response.ok) {
-        setJoinRoomPopup(false);
-        console.log("Room found. Joining."); // placeholder for waiting room popup
+        setRoomCode(inputCode);
+        setScreen("waiting");
       }
     } catch (e) {}
   };
 
   return (
-    <div className="menu">
+    <div className="screen">
       <h1 className="title-text">WordChain</h1>
       <div className="buttons">
         {showCreateRoomPopup && (
