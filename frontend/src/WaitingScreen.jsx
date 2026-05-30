@@ -1,14 +1,18 @@
 import { useState, useEffect } from "react";
 
-export default function WaitingRoom({ roomCode, setScreen, lastMessage }) {
+export default function WaitingRoom({ roomCode, setScreen, onMessageHandler }) {
   const [playerCount, setPlayerCount] = useState(0);
   const [countdown, setCountdown] = useState(null);
 
   useEffect(() => {
-    if (!lastMessage) return;
-    if (lastMessage.type === "game_start") setCountdown(3);
-    if (lastMessage.type === "player_joined") setPlayerCount(lastMessage.count);
-  }, [lastMessage]);
+    onMessageHandler.current = (msg) => {
+      if (msg.type === "game_start") setCountdown(3);
+      if (msg.type === "player_joined") setPlayerCount(msg.count);
+    };
+    return () => {
+      onMessageHandler.current = null;
+    };
+  }, [onMessageHandler]);
 
   useEffect(() => {
     if (countdown === null) return;

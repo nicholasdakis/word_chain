@@ -7,15 +7,15 @@ import "./App.css";
 export default function App() {
   const [screen, setScreen] = useState("menu");
   const [roomCode, setRoomCode] = useState(null);
-  const [lastMessage, setLastMessage] = useState(null);
   const ws = useRef(null);
+  const onMessageHandler = useRef(null);
 
   useEffect(() => {
-    if (screen === "menu") setLastMessage(null);
     if (screen === "waiting" && roomCode) {
       ws.current = new WebSocket(`ws://localhost:8000/ws/${roomCode}`);
       ws.current.onmessage = (event) => {
-        setLastMessage(JSON.parse(event.data));
+        if (onMessageHandler.current)
+          onMessageHandler.current(JSON.parse(event.data));
       };
     }
     return () => {
@@ -35,8 +35,7 @@ export default function App() {
         <WaitingRoom
           setScreen={setScreen}
           roomCode={roomCode}
-          ws={ws}
-          lastMessage={lastMessage}
+          onMessageHandler={onMessageHandler}
         />
       )}
       {screen === "game" && (
@@ -44,7 +43,7 @@ export default function App() {
           setScreen={setScreen}
           roomCode={roomCode}
           ws={ws}
-          lastMessage={lastMessage}
+          onMessageHandler={onMessageHandler}
         />
       )}
     </div>

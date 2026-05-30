@@ -24,7 +24,8 @@ def root():
 async def websocket_endpoint(websocket: WebSocket, room_id: str):
     await websocket.accept()
     rooms[room_id]["players"].append(websocket) # add each user's websocket to the room
-    await websocket.send_text(json.dumps({"type": "player_joined", "count": len( rooms[room_id]["players"])}))
+    for player in rooms[room_id]["players"]:
+        await player.send_text(json.dumps({"type": "player_joined", "count": len(rooms[room_id]["players"])}))
 
     if len(rooms[room_id]["players"]) == 2:
        for player in rooms[room_id]["players"]:
