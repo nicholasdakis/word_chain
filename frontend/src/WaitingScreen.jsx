@@ -1,25 +1,14 @@
 import { useState, useEffect } from "react";
 
-export default function WaitingRoom({ roomCode, setScreen }) {
+export default function WaitingRoom({ roomCode, setScreen, lastMessage }) {
   const [playerCount, setPlayerCount] = useState(0);
   const [countdown, setCountdown] = useState(null);
 
   useEffect(() => {
-    const ws = new WebSocket(`ws://localhost:8000/ws/${roomCode}`);
-
-    ws.onopen = () => {
-      console.log("connected");
-    };
-
-    ws.onmessage = (event) => {
-      console.log(event.data);
-      const msg = JSON.parse(event.data);
-      if (msg.type === "game_start") {
-        setCountdown(3);
-      }
-      if (msg.type === "player_joined") setPlayerCount(msg.count);
-    };
-  }, []);
+    if (!lastMessage) return;
+    if (lastMessage.type === "game_start") setCountdown(3);
+    if (lastMessage.type === "player_joined") setPlayerCount(lastMessage.count);
+  }, [lastMessage]);
 
   useEffect(() => {
     if (countdown === null) return;
