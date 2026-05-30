@@ -6,6 +6,7 @@ export default function GameRoom({
   ws,
   onMessageHandler,
   playerId,
+  playerName,
 }) {
   const [word, setWord] = useState("");
   const [validityNotifier, setValidityNotifier] = useState("");
@@ -34,7 +35,7 @@ export default function GameRoom({
     <div className="screen">
       <h1 className="title-text">Game Room</h1>
       <h2>Room code: {roomCode}</h2>
-      {playerId != null && <h2>You are: {playerId}</h2>}
+      {playerId != null && <h2>You are {playerName}</h2>}
       {validityNotifier !== "" && <h2>{validityNotifier}</h2>}
       <div>
         <input value={word} onChange={(e) => setWord(e.target.value)} />

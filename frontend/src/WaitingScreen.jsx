@@ -5,6 +5,8 @@ export default function WaitingRoom({
   setScreen,
   onMessageHandler,
   setPlayerId,
+  setPlayerName,
+  playerName,
   playerId,
 }) {
   const [playerCount, setPlayerCount] = useState(0);
@@ -16,6 +18,7 @@ export default function WaitingRoom({
       if (msg.type === "player_joined") setPlayerCount(msg.count);
       if (msg.type === "user_info") {
         setPlayerId(msg.id);
+        setPlayerName(msg.username);
       }
     };
     return () => {
@@ -40,7 +43,7 @@ export default function WaitingRoom({
     <div className="screen">
       <h1 className="title-text">Waiting Room</h1>
       <h2>Room code: {roomCode}</h2>
-      {playerId != null && <h2>You are: {playerId}</h2>}
+      {playerId != null && <h2>You are {playerName}</h2>}
       <h2>Player count: {playerCount}</h2>
       {countdown != null && <h2>Game starting in: {countdown} seconds</h2>}
       <button onClick={() => setScreen("menu")}>Back</button>

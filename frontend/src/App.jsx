@@ -8,13 +8,16 @@ export default function App() {
   const [screen, setScreen] = useState("menu");
   const [roomCode, setRoomCode] = useState(null);
   const [playerId, setPlayerId] = useState(null);
-  const [username, setUsername] = useState("");
+  const [playerName, setPlayerName] = useState(null); // from backend
+  const [username, setUsername] = useState(""); // locally set
   const ws = useRef(null);
   const onMessageHandler = useRef(null);
 
   useEffect(() => {
     if (screen === "waiting" && roomCode) {
-      ws.current = new WebSocket(`ws://localhost:8000/ws/${roomCode}`);
+      ws.current = new WebSocket(
+        `ws://localhost:8000/ws/${roomCode}?username=${username}`,
+      );
       ws.current.onmessage = (event) => {
         if (onMessageHandler.current)
           onMessageHandler.current(JSON.parse(event.data));
@@ -43,6 +46,8 @@ export default function App() {
           roomCode={roomCode}
           onMessageHandler={onMessageHandler}
           setPlayerId={setPlayerId}
+          setPlayerName={setPlayerName}
+          playerName={playerName}
           playerId={playerId}
         />
       )}
@@ -53,6 +58,7 @@ export default function App() {
           ws={ws}
           onMessageHandler={onMessageHandler}
           playerId={playerId}
+          playerName={username}
         />
       )}
     </div>

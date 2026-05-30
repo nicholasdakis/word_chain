@@ -1,6 +1,6 @@
 import random
 import string
-from fastapi import FastAPI, WebSocket, HTTPException, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, Query, HTTPException, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import json
 from service import validate_word
@@ -21,10 +21,11 @@ def root():
     return {"message": "WordChain backend is running"}
 
 @app.websocket("/ws/{room_id}")
-async def websocket_endpoint(websocket: WebSocket, room_id: str):
+async def websocket_endpoint(websocket: WebSocket, room_id: str, username: str = Query(default="")):
     await websocket.accept()
     join_count = len(rooms[room_id]["players"]) + 1
-    new_player = {"ws": websocket, "id": f"player_{join_count}", "username": f"Player {join_count}"}
+    username = username if username else f"Player {join_count}"
+    new_player = {"ws": websocket, "id": f"player_{join_count}", "username": username}
     rooms[room_id]["players"].append(new_player)
     await websocket.send_text(json.dumps({"type": "user_info", "id": new_player["id"], "username": new_player["username"]}))
     for player in rooms[room_id]["players"]:
