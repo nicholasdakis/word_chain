@@ -9,11 +9,9 @@ export default function Menu({ setScreen, setRoomCode }) {
   const handleCreateRoom = async () => {
     console.log("clicked");
     try {
-      console.log("b4 fetch");
       const response = await fetch("http://localhost:8000/rooms", {
         method: "POST",
       });
-      console.log("after fetch", response);
       if (response.ok) {
         const code = await response.json();
         setRoomCode(code);

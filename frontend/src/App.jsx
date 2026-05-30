@@ -11,6 +11,7 @@ export default function App() {
   const ws = useRef(null);
 
   useEffect(() => {
+    if (screen === "menu") setLastMessage(null);
     if (screen === "waiting" && roomCode) {
       ws.current = new WebSocket(`ws://localhost:8000/ws/${roomCode}`);
       ws.current.onmessage = (event) => {
@@ -18,7 +19,7 @@ export default function App() {
       };
     }
     return () => {
-      if (ws.current) {
+      if (screen === "menu" && ws.current) {
         ws.current.close();
         ws.current = null;
       }
