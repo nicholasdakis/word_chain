@@ -1,25 +1,19 @@
 import { useState } from "react";
 
-export default function JoinRoomModal({ onClose, handleJoinRoom }) {
-  const [code, setCode] = useState("");
+export default function SetUsernameModal({ onClose, handleSetUsername }) {
   const [username, setUsername] = useState("");
 
   return (
     <div className="modal-overlay">
       <div className="modal-box">
-        <h3>Enter Code:</h3>
-        <input
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          placeholder="Enter a code..."
-        />
+        <h3>Enter a username:</h3>
         <input
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Enter a username..."
         />
         <button onClick={onClose}>Close</button>
-        <button onClick={() => handleJoinRoom(code, username)}>Confirm</button>
+        <button onClick={() => handleSetUsername(username)}>Confirm</button>
       </div>
     </div>
   );

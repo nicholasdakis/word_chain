@@ -8,6 +8,7 @@ export default function App() {
   const [screen, setScreen] = useState("menu");
   const [roomCode, setRoomCode] = useState(null);
   const [playerId, setPlayerId] = useState(null);
+  const [username, setUsername] = useState("");
   const ws = useRef(null);
   const onMessageHandler = useRef(null);
 
@@ -30,7 +31,11 @@ export default function App() {
   return (
     <div>
       {screen === "menu" && (
-        <Menu setScreen={setScreen} setRoomCode={setRoomCode} />
+        <Menu
+          setScreen={setScreen}
+          setRoomCode={setRoomCode}
+          setUsername={setUsername}
+        />
       )}
       {screen === "waiting" && (
         <WaitingRoom

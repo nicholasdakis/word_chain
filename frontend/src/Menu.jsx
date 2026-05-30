@@ -1,13 +1,18 @@
 import { useState } from "react";
-import CreateRoomModal from "./CreateRoomModal.jsx";
 import JoinRoomModal from "./JoinRoomModal.jsx";
+import SetUsernameModal from "./UsernameModal.jsx";
 
-export default function Menu({ setScreen, setRoomCode }) {
-  const [showCreateRoomPopup, setCreateRoomPopup] = useState(false);
+export default function Menu({ setScreen, setRoomCode, setUsername }) {
   const [showJoinRoomPopup, setJoinRoomPopup] = useState(false);
+  const [showUsernamePopup, setShowUsernamePopup] = useState(false);
+
+  const handleSetUsername = async (username) => {
+    setShowUsernamePopup(false);
+    setUsername(username);
+    await handleCreateRoom();
+  };
 
   const handleCreateRoom = async () => {
-    console.log("clicked");
     try {
       const response = await fetch("http://localhost:8000/rooms", {
         method: "POST",
@@ -17,16 +22,16 @@ export default function Menu({ setScreen, setRoomCode }) {
         setRoomCode(code);
         setScreen("waiting");
       }
-      console.log(response.status);
     } catch (e) {
       console.log(e);
     }
   };
 
-  const handleJoinRoom = async (inputCode) => {
+  const handleJoinRoom = async (inputCode, username) => {
     try {
       const response = await fetch(`http://localhost:8000/rooms/${inputCode}`);
       if (response.ok) {
+        setUsername(username);
         setRoomCode(inputCode);
         setScreen("waiting");
       }
@@ -37,13 +42,13 @@ export default function Menu({ setScreen, setRoomCode }) {
     <div className="screen">
       <h1 className="title-text">WordChain</h1>
       <div className="buttons">
-        {showCreateRoomPopup && (
-          <CreateRoomModal
-            onClose={() => setCreateRoomPopup(false)}
-            roomCode={roomCode}
+        {showUsernamePopup && (
+          <SetUsernameModal
+            onClose={() => setShowUsernamePopup(false)}
+            handleSetUsername={handleSetUsername}
           />
         )}
-        <button onClick={handleCreateRoom}>Create Room</button>
+        <button onClick={() => setShowUsernamePopup(true)}>Create Room</button>
         {showJoinRoomPopup && (
           <JoinRoomModal
             onClose={() => setJoinRoomPopup(false)}
