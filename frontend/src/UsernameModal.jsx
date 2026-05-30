@@ -12,8 +12,10 @@ export default function SetUsernameModal({ onClose, handleSetUsername }) {
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Enter a username..."
         />
-        <button onClick={onClose}>Close</button>
-        <button onClick={() => handleSetUsername(username)}>Confirm</button>
+        <div className="modal-buttons">
+          <button onClick={onClose}>Close</button>
+          <button onClick={() => handleSetUsername(username)}>Confirm</button>
+        </div>
       </div>
     </div>
   );

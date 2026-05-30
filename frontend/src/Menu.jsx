@@ -39,23 +39,39 @@ export default function Menu({ setScreen, setRoomCode, setUsername }) {
   };
 
   return (
-    <div className="screen">
+    <div>
       <h1 className="title-text">WordChain</h1>
-      <div className="buttons">
-        {showUsernamePopup && (
-          <SetUsernameModal
-            onClose={() => setShowUsernamePopup(false)}
-            handleSetUsername={handleSetUsername}
-          />
-        )}
-        <button onClick={() => setShowUsernamePopup(true)}>Create Room</button>
-        {showJoinRoomPopup && (
-          <JoinRoomModal
-            onClose={() => setJoinRoomPopup(false)}
-            handleJoinRoom={handleJoinRoom}
-          />
-        )}
-        <button onClick={() => setJoinRoomPopup(true)}>Join Room</button>
+      <p className="tagline">
+        Each word must start with the last letter of the previous one. Work
+        together!
+      </p>
+      <div className="screen">
+        <div className="buttons">
+          {showUsernamePopup && (
+            <SetUsernameModal
+              onClose={() => setShowUsernamePopup(false)}
+              handleSetUsername={handleSetUsername}
+            />
+          )}
+          <button
+            disabled={showUsernamePopup}
+            onClick={() => setShowUsernamePopup(true)}
+          >
+            Create Room
+          </button>
+          {showJoinRoomPopup && (
+            <JoinRoomModal
+              onClose={() => setJoinRoomPopup(false)}
+              handleJoinRoom={handleJoinRoom}
+            />
+          )}
+          <button
+            disabled={showJoinRoomPopup}
+            onClick={() => setJoinRoomPopup(true)}
+          >
+            Join Room
+          </button>
+        </div>
       </div>
     </div>
   );

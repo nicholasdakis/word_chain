@@ -1,9 +1,12 @@
 * {
+  font-family: "Fredoka One", cursive;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 body {
-  font-family: system-ui, sans-serif;
+  font-family: "Fredoka One", cursive;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #f5e6c8, #e8c99a);
 }
