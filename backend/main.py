@@ -23,13 +23,16 @@ def root():
 @app.websocket("/ws/{room_id}")
 async def websocket_endpoint(websocket: WebSocket, room_id: str):
     await websocket.accept()
-    rooms[room_id]["players"].append(websocket) # add each user's websocket to the room
+    join_count = len(rooms[room_id]["players"]) + 1
+    new_player = {"ws": websocket, "id": f"player_{join_count}", "username": f"Player {join_count}"}
+    rooms[room_id]["players"].append(new_player)
+    await websocket.send_text(json.dumps({"type": "user_info", "id": new_player["id"], "username": new_player["username"]}))
     for player in rooms[room_id]["players"]:
-        await player.send_text(json.dumps({"type": "player_joined", "count": len(rooms[room_id]["players"])}))
+        await player["ws"].send_text(json.dumps({"type": "player_joined", "count": len(rooms[room_id]["players"])}))
 
     if len(rooms[room_id]["players"]) == 2:
        for player in rooms[room_id]["players"]:
-            await player.send_text(json.dumps({"type": "game_start"}))
+            await player["ws"].send_text(json.dumps({"type": "game_start"}))
 
     try:
         while True:
@@ -39,14 +42,14 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
                 response = validate_word(msg["submitted_word"], rooms[room_id]["latest_word"], rooms[room_id]["used_words"])
                 if not response["valid"]:
                     for player in rooms[room_id]["players"]:
-                        await player.send_text(json.dumps(response))
+                        await player["ws"].send_text(json.dumps(response))
                 else:
                     rooms[room_id]["latest_word"] = msg["submitted_word"]
                     rooms[room_id]["used_words"].add(msg["submitted_word"])
                     for player in rooms[room_id]["players"]:
-                        await player.send_text(json.dumps({"valid": True, "word": msg["submitted_word"]}))
+                        await player["ws"].send_text(json.dumps({"valid": True, "word": msg["submitted_word"]}))
     except WebSocketDisconnect:
-        rooms[room_id]["players"].remove(websocket)
+        rooms[room_id]["players"].remove(new_player)
     
 @app.post("/rooms")
 def create_room():

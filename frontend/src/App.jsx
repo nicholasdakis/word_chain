@@ -7,6 +7,7 @@ import "./App.css";
 export default function App() {
   const [screen, setScreen] = useState("menu");
   const [roomCode, setRoomCode] = useState(null);
+  const [playerId, setPlayerId] = useState(null);
   const ws = useRef(null);
   const onMessageHandler = useRef(null);
 
@@ -36,6 +37,8 @@ export default function App() {
           setScreen={setScreen}
           roomCode={roomCode}
           onMessageHandler={onMessageHandler}
+          setPlayerId={setPlayerId}
+          playerId={playerId}
         />
       )}
       {screen === "game" && (
@@ -44,6 +47,7 @@ export default function App() {
           roomCode={roomCode}
           ws={ws}
           onMessageHandler={onMessageHandler}
+          playerId={playerId}
         />
       )}
     </div>

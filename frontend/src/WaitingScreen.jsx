@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 
-export default function WaitingRoom({ roomCode, setScreen, onMessageHandler }) {
+export default function WaitingRoom({
+  roomCode,
+  setScreen,
+  onMessageHandler,
+  setPlayerId,
+  playerId,
+}) {
   const [playerCount, setPlayerCount] = useState(0);
   const [countdown, setCountdown] = useState(null);
 
@@ -8,6 +14,9 @@ export default function WaitingRoom({ roomCode, setScreen, onMessageHandler }) {
     onMessageHandler.current = (msg) => {
       if (msg.type === "game_start") setCountdown(3);
       if (msg.type === "player_joined") setPlayerCount(msg.count);
+      if (msg.type === "user_info") {
+        setPlayerId(msg.id);
+      }
     };
     return () => {
       onMessageHandler.current = null;
@@ -31,6 +40,7 @@ export default function WaitingRoom({ roomCode, setScreen, onMessageHandler }) {
     <div className="screen">
       <h1 className="title-text">Waiting Room</h1>
       <h2>Room code: {roomCode}</h2>
+      {playerId != null && <h2>You are: {playerId}</h2>}
       <h2>Player count: {playerCount}</h2>
       {countdown != null && <h2>Game starting in: {countdown} seconds</h2>}
       <button onClick={() => setScreen("menu")}>Back</button>
