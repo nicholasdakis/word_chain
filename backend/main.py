@@ -2,6 +2,7 @@ import random
 import string
 from fastapi import FastAPI, WebSocket, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+import json
 
 app = FastAPI()
 
@@ -21,6 +22,13 @@ def root():
 @app.websocket("/ws/{room_id}")
 async def websocket_endpoint(websocket: WebSocket, room_id: str):
     await websocket.accept()
+    rooms[room_id]["players"].append(websocket) # add each user's websocket to the room
+    await websocket.send_text(json.dumps({"type": "player_joined", "count": len( rooms[room_id]["players"])}))
+
+    if len(rooms[room_id]["players"]) == 2:
+       for player in rooms[room_id]["players"]:
+            await player.send_text(json.dumps({"type": "game_start"}))
+
     while True:
         data = await websocket.receive_text()
         await websocket.send_text(data)
@@ -30,10 +38,8 @@ def create_room():
     while True:
         room_id = "".join(random.choices(string.ascii_letters + string.digits, k=6))
         if room_id not in rooms:
-            rooms[room_id] = {}
-            print(rooms)
+            rooms[room_id] = {"players": []}
             break
-
     return room_id
 
 @app.get("/rooms/{room_id}")

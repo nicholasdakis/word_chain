@@ -7,16 +7,22 @@ export default function Menu({ setScreen, setRoomCode }) {
   const [showJoinRoomPopup, setJoinRoomPopup] = useState(false);
 
   const handleCreateRoom = async () => {
+    console.log("clicked");
     try {
+      console.log("b4 fetch");
       const response = await fetch("http://localhost:8000/rooms", {
         method: "POST",
       });
+      console.log("after fetch", response);
       if (response.ok) {
         const code = await response.json();
         setRoomCode(code);
         setScreen("waiting");
       }
-    } catch (e) {}
+      console.log(response.status);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const handleJoinRoom = async (inputCode) => {
